@@ -47,6 +47,7 @@ public class DemoConfig extends JFinalConfig {
 	/**
 	 * 配置常量
 	 */
+	@Override
 	public void configConstant(Constants me) {
 		loadConfig();
 		
@@ -65,19 +66,24 @@ public class DemoConfig extends JFinalConfig {
 	/**
 	 * 配置路由
 	 */
+	@Override
 	public void configRoute(Routes me) {
 		me.add("/", IndexController.class, "/index");	// 第三个参数为该Controller的视图存放路径
 	}
 	
+	@Override
 	public void configEngine(Engine me) {
 	}
 	
 	/**
 	 * 配置插件
 	 */
+	@Override
 	public void configPlugin(Plugins me) {
 		Cron4jPlugin cp = new Cron4jPlugin();
-		cp.addTask("* * * * *", new MyTask());
+		loadConfig();
+//		PostContent pc=new PostContent();
+		cp.addTask(p.get("cron4j.postcontent"), new PostContent());
 		me.add(cp);
 	}
 
@@ -85,6 +91,7 @@ public class DemoConfig extends JFinalConfig {
 	/**
 	 * 配置全局拦截器
 	 */
+	@Override
 	public void configInterceptor(Interceptors me) {
 		
 	}
@@ -92,6 +99,7 @@ public class DemoConfig extends JFinalConfig {
 	/**
 	 * 配置处理器
 	 */
+	@Override
 	public void configHandler(Handlers me) {
 		
 	}
