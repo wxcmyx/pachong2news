@@ -1,4 +1,4 @@
-package com.demo.index;
+package com.wixct.index;
 
 import com.jfinal.core.Controller;
 
@@ -10,7 +10,7 @@ import com.jfinal.core.Controller;
  */
 public class IndexController extends Controller {
 	public void index() {
-		render("index.html");
+		renderText("服务已启动");
 	}
 }
 

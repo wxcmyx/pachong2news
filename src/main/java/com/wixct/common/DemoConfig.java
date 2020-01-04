@@ -1,8 +1,7 @@
-package com.demo.common;
+package com.wixct.common;
 
-import com.demo.blog.BlogController;
-import com.demo.common.model._MappingKit;
-import com.demo.index.IndexController;
+import com.jfinal.core.JFinal;
+import com.wixct.index.IndexController;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -11,10 +10,7 @@ import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
 import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.cron4j.Cron4jPlugin;
-import com.jfinal.plugin.druid.DruidPlugin;
-import com.jfinal.server.undertow.UndertowServer;
 import com.jfinal.template.Engine;
 
 /**
@@ -26,12 +22,12 @@ import com.jfinal.template.Engine;
 public class DemoConfig extends JFinalConfig {
 	
 	static Prop p;
-	
+
 	/**
 	 * 启动入口，运行此 main 方法可以启动项目，此 main 方法可以放置在任意的 Class 类定义中，不一定要放于此
 	 */
 	public static void main(String[] args) {
-		UndertowServer.start(DemoConfig.class);
+		JFinal.start("src/main/webapp", 80, "/", 5);
 	}
 	
 	/**
@@ -40,7 +36,7 @@ public class DemoConfig extends JFinalConfig {
 	 */
 	static void loadConfig() {
 		if (p == null) {
-			p = PropKit.useFirstFound("demo-config-pro.txt", "demo-config-dev.txt");
+			p = PropKit.useFirstFound("config.properties");
 		}
 	}
 
@@ -82,8 +78,7 @@ public class DemoConfig extends JFinalConfig {
 	public void configPlugin(Plugins me) {
 		Cron4jPlugin cp = new Cron4jPlugin();
 		loadConfig();
-//		PostContent pc=new PostContent();
-		cp.addTask(p.get("cron4j.postcontent"), new PostContent());
+		cp.addTask(p.get("cron4j.postcontent"), new PostContent(p.getBoolean("devMode", false)));
 		me.add(cp);
 	}
 
