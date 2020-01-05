@@ -38,55 +38,56 @@ public class PostContent extends Task {
         }
 
     }
-    public static HashMap buildNewsPage() throws IOException{
-        logger.error("访问："+complateUrl);
-        Document doc2= Jsoup.connect(complateUrl).get();
+    public static HashMap buildNewsPage(int pagesSize) throws IOException{
+
         curList=new HashMap<String,HashMap<String,String>>();
         HashMap<String,HashMap<String,String> > tempCont=new HashMap();
         if(leastList==null){
             leastList=new HashMap<String,HashMap<String,String>>();
         }
-//        logger.debug(doc2.html());
-        Elements newsHeadlines2 = doc2.select(".list-one");
-        HashMap<String,String> contentMap=new HashMap();
-        for (Element headline2 : newsHeadlines2) {
-            contentMap=new HashMap();
-            String url=StringUtils.substringBetween(headline2.toString(), "<h4 class=\"title\"><a href=\"", "\">");
-            String title= StringUtils.substringBetween(headline2.toString(), "<h4 class=\"title\"><a href=\""+url+"\">", "</a></h4>");
-            String title_image=StringUtils.substringBetween(headline2.toString(), "<img src=\"", "\"></a>");
-            String time_categray_str=StringUtils.substringBetween(headline2.toString(), "<div class=\"info\">", "&nbsp;");
-//            String star=StringUtils.substringBetween(headline2.toString(), "<td class=\"table-change\">", "</td>");
-            String time_str=StringUtils.split(time_categray_str,"|")[0];
-            String category_str=StringUtils.split(time_categray_str,"|")[1];
-            if(StringUtils.isNotBlank(title)){
-                title=title.trim();
-                contentMap.put("title",title);
-            }
-            if(StringUtils.isNotBlank(title_image)){
-                title_image=title_image.trim();
-                contentMap.put("title_image",title_image);
-            }
-            if(StringUtils.isNotBlank(url)){
-                url=url.trim();
-                contentMap.put("url",url);
-            }
-            if(StringUtils.isNotBlank(time_categray_str)){
-                time_categray_str=time_categray_str.trim();
-                contentMap.put("time_categray_str",time_categray_str);
-            }
-            if(StringUtils.isNotBlank(time_str)){
-                time_str=time_str.trim();
-                contentMap.put("time_str",time_str);
-            }
-            if(StringUtils.isNotBlank(category_str)){
-                category_str=category_str.trim();
-                contentMap.put("category_str",category_str);
-            }
-            if(!leastList.containsKey(url)){
-                curList.put(url,contentMap);
-            }
-            tempCont.put(url,contentMap);
+        HashMap<String, String> contentMap = new HashMap();
+        for(int i=1;i<=pagesSize;i++) {
+            logger.error("访问：" + complateUrl+"?page="+i);
+            Document doc2 = Jsoup.connect(complateUrl+"?page="+i).get();
+            Elements newsHeadlines2 = doc2.select(".list-one");
+            for (Element headline2 : newsHeadlines2) {
+                contentMap = new HashMap();
+                String url = StringUtils.substringBetween(headline2.toString(), "<h4 class=\"title\"><a href=\"", "\">");
+                String title = StringUtils.substringBetween(headline2.toString(), "<h4 class=\"title\"><a href=\"" + url + "\">", "</a></h4>");
+                String title_image = StringUtils.substringBetween(headline2.toString(), "<img src=\"", "\"></a>");
+                String time_categray_str = StringUtils.substringBetween(headline2.toString(), "<div class=\"info\">", "&nbsp;");
+                String time_str = StringUtils.split(time_categray_str, "|")[0];
+                String category_str = StringUtils.split(time_categray_str, "|")[1];
+                if (StringUtils.isNotBlank(title)) {
+                    title = title.trim();
+                    contentMap.put("title", title);
+                }
+                if (StringUtils.isNotBlank(title_image)) {
+                    title_image = title_image.trim();
+                    contentMap.put("title_image", title_image);
+                }
+                if (StringUtils.isNotBlank(url)) {
+                    url = url.trim();
+                    contentMap.put("url", url);
+                }
+                if (StringUtils.isNotBlank(time_categray_str)) {
+                    time_categray_str = time_categray_str.trim();
+                    contentMap.put("time_categray_str", time_categray_str);
+                }
+                if (StringUtils.isNotBlank(time_str)) {
+                    time_str = time_str.trim();
+                    contentMap.put("time_str", time_str);
+                }
+                if (StringUtils.isNotBlank(category_str)) {
+                    category_str = category_str.trim();
+                    contentMap.put("category_str", category_str);
+                }
+                if (!leastList.containsKey(url)) {
+                    curList.put(url, contentMap);
+                }
+                tempCont.put(url, contentMap);
 
+            }
         }
         leastList=tempCont;
         return curList;
@@ -95,7 +96,7 @@ public class PostContent extends Task {
     @Override
     public void execute(TaskExecutionContext taskExecutionContext) throws RuntimeException {
         try {
-            buildNewsPage();
+            buildNewsPage(2);
             buidContent();
             String postBody=JsonKit.toJson(curList);
 //            logger.debug(postBody);
@@ -113,14 +114,14 @@ public class PostContent extends Task {
     private static void buidContent() throws IOException {
         for(Object key : curList.keySet()){
             HashMap hm=curList.get(key);
-            logger.error("开发模式："+devMode);
+//            logger.error("开发模式："+devMode);
             String fullUrl=baseUrl+key;
             if(devMode){//开发模式
                 fullUrl=baseUrl;
             }else{
                 fullUrl=baseUrl+key;
             }
-            logger.error("文章地址："+fullUrl);
+//            logger.error("文章地址："+fullUrl);
             Document doc2= Jsoup.connect(fullUrl).get();
             Elements newsHeadlines2 = doc2.select(".main-content");
             String content=newsHeadlines2.html();
