@@ -27,8 +27,15 @@ public class PostContent extends Task {
     private static String baseUrl="http://localhost:8080/one.htm";
     private static String complateUrl="http://localhost:8080/example.htm";
     private static String postUrl="http://localhost:8082/github/getmessages";
+    /**
+     * 开发模式，默认生产模式
+     */
     private static boolean devMode=false;
 
+    /**
+     * 设置开发模式
+     * @param devModet
+     */
     public PostContent(boolean devModet){
         devMode=devModet;
         if(!devModet){//生产模式
@@ -38,6 +45,13 @@ public class PostContent extends Task {
         }
 
     }
+
+    /**
+     * 爬取内容，获取新消息
+     * @param pagesSize 页数
+     * @return
+     * @throws IOException
+     */
     public static HashMap buildNewsPage(int pagesSize) throws IOException{
 
         curList=new HashMap<String,HashMap<String,String>>();
@@ -111,11 +125,15 @@ public class PostContent extends Task {
         }
     }
 
+    /**
+     * 获取文章内容
+     * @throws IOException
+     */
     private static void buidContent() throws IOException {
         for(Object key : curList.keySet()){
             HashMap hm=curList.get(key);
 //            logger.error("开发模式："+devMode);
-            String fullUrl=baseUrl+key;
+            String fullUrl=StringUtils.EMPTY;
             if(devMode){//开发模式
                 fullUrl=baseUrl;
             }else{
