@@ -113,11 +113,9 @@ public class PostContent extends Task {
             buildNewsPage(2);
             buidContent();
             String postBody=JsonKit.toJson(curList);
-//            logger.debug(postBody);
             HashMap<String,String> headers=new HashMap<>();
             headers.put("Content-Type","application/json");
             String result=HttpKit.post(postUrl,postBody,headers);
-            logger.error("提交数据："+postUrl);
             logger.error("提交数据量："+curList.size());
             logger.error("返回数据："+result);
         } catch (IOException e) {
