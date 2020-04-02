@@ -78,7 +78,7 @@ public class DemoConfig extends JFinalConfig {
 	public void configPlugin(Plugins me) {
 		Cron4jPlugin cp = new Cron4jPlugin();
 		loadConfig();
-		cp.addTask(p.get("cron4j.postcontent"), new PostContent(p.getBoolean("devMode", false)));
+		cp.addTask(p.get("cron4j.postcontent"), PostContent.setDevMode(p.getBoolean("devMode", false)));
 		me.add(cp);
 	}
 

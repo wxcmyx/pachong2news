@@ -24,27 +24,26 @@ public class PostContent extends Task {
     private static HashMap<String,HashMap<String,String>> curList=null;
     private static HashMap<String,HashMap<String,String>> leastList=null;
 //    private static String complateUrl="https://www.powerapple.com/news/articles";
-    private static String baseUrl="http://localhost:8080/one.htm";
-    private static String complateUrl="http://localhost:8080/example.htm";
+    private static String baseUrl="http://localhost:8800/one.htm";
+    private static String complateUrl="http://localhost:8800/example.htm";
     private static String postUrl="http://localhost:8082/github/getmessages";
+
+    public static PostContent setDevMode(boolean devModet) {
+        PostContent.devMode = devModet;
+        if(!devModet){//生产模式
+            complateUrl="https://www.powerapple.com/news/articles";
+            baseUrl="https://www.powerapple.com";
+            postUrl="https://wixct.com/github/getmessages";
+        }
+        return new PostContent();
+    }
+
     /**
      * 开发模式，默认生产模式
      */
     private static boolean devMode=false;
 
-    /**
-     * 设置开发模式
-     * @param devModet
-     */
-    public PostContent(boolean devModet){
-        devMode=devModet;
-        if(!devModet){//生产模式
-            complateUrl="https://www.powerapple.com/news/articles";
-            baseUrl="https://www.powerapple.com";
-            postUrl="http://wixct.com/github/getmessages";
-        }
 
-    }
 
     /**
      * 爬取内容，获取新消息
